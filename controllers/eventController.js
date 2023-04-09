@@ -13,7 +13,7 @@ class EventController {
     }
 
     async getEventById(req, res) {
-        try{
+        try {
             const id = req.params.id;
             const event = await eventData.getEventById(id);
             res.send(event);
@@ -28,6 +28,7 @@ class EventController {
             const event = req.body;
             const created = await eventData.createEvent(event);
             console.log("Created event: ", created, "successfully");
+            res.send("Created event: ", created, "successfully");
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -37,7 +38,25 @@ class EventController {
         try {
             const event = req.body;
             const updated = await eventData.updateEvent(event);
-            console.log("Updated event: ", updated, "successfully");
+            
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    }
+
+    async deleteEvent(req, res) {
+        try {
+            const id = req.params.id;
+            // execute the SQL query
+            const deleted = await eventData.deleteEvent(id);
+            // check if the event was deleted successfully or not 
+            if (deleted === undefined) {
+                throw new Error("Event ID is required");
+            }
+            else {
+                console.log("Deleted event ", id, " successfully");
+                res.send("Deleted event ", id, " successfully");
+            }
         } catch (error) {
             res.status(500).send(error.message);
         }

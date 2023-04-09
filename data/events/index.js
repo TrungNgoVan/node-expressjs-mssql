@@ -57,6 +57,7 @@ class EventData {
         try {
             const pool = await sql.connect(config.sql);
             const sqlQueries = await utils.loadSqlQueries('events');
+            // pass the SQL parameter value
             const updateEvent = await pool.request()
                 .input('eventId', sql.Int, eventData.eventId)
                 .input('eventTitle', sql.NVarChar(100), eventData.eventTitle)
@@ -66,7 +67,25 @@ class EventData {
                 .input('avenue', sql.NVarChar(200), eventData.avenue)
                 .input('maxMembers', sql.Int, eventData.maxMembers)
                 .query(sqlQueries.updateEvent);
+            // return the updated recordset
             return updateEvent.recordset;
+        }
+        catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    deleteEvent = async (id) => {
+        try {
+            const pool = await sql.connect(config.sql);
+            // load all query file in folder 'events'
+            const sqlQueries = await utils.loadSqlQueries('events');
+            const deleteEvent = await pool.request()
+                // pass the SQL parameter value 
+                .input('eventId', sql.Int, id)
+                // pass the SQL query
+                .query(sqlQueries.deleteEvent);
+            return deleteEvent.recordset;
         }
         catch (error) {
             console.log(error.message);
